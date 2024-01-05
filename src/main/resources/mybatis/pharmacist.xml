@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="code.dao.pharmacistDao">
+    <insert id="addPharmacist" parameterType="code.pojo.pharmacist">
+        INSERT INTO `shopping`.`pharmacist` (`id`, `name`, `duties`, `password`) VALUES (#{id},#{name},#{duties},#{password});
+    </insert>
+    <select id="selectedPharmacistById" parameterType="String" resultType="code.pojo.pharmacist">
+        select *
+        from shopping.pharmacist p
+        where p.id = #{id}
+    </select>
+    <select id="selectedAll" parameterType="Integer" resultType="code.pojo.pharmacist">
+        select *
+        from shopping.pharmacist p
+        where true
+    </select>
+
+    <delete id="deletePharmacist" parameterType="String">
+        DELETE FROM `shopping`.`pharmacist` WHERE (`id` = #{id});
+    </delete>
+
+    <update id="upDataPharmacist" parameterType="code.pojo.pharmacist">
+        UPDATE `shopping`.`pharmacist` SET `name` = #{name},`duties` = #{duties},`password` = #{password} WHERE (`id` = #{id});
+    </update>
+</mapper>
+

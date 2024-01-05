@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="code.dao.shoppingCartDao">
+    <insert id="addShoppingCart" parameterType="code.pojo.shoppingCart">
+        INSERT INTO `shopping`.`shoppingcart` (`id`, `customerId`, `barCode`, `count`, `status`, `joinTime`) VALUES (#{id}, #{telephone}, #{idOrderFrom}, #{count}, #{status}, #{joinTime});
+    </insert>
+    <select id="selectedAll" resultType="code.pojo.shoppingCart">
+        select *
+        from shopping.shoppingcart s
+        where true
+    </select>
+    <select id="selectedByCustomerId" parameterType="String" resultType="code.pojo.shoppingCart">
+        select *
+        from shopping.shoppingcart s
+        where s.customerId = #{customerId}
+    </select>
+
+    <delete id="deleteShoppingCart" parameterType="String">
+        DELETE FROM `shopping`.`shoppingcart`
+        WHERE (`id` = #{id});
+    </delete>
+
+    <update id="upDataShoppingCart" parameterType="code.pojo.shoppingCart">
+        UPDATE `shopping`.`shoppingcart` SET `customerId` = #{customerId}, `barCode` = #{barCode}, `count` = #{count}, `status` = #{status}, `joinTime` = #{joinTime} WHERE (`id` = #{id});
+    </update>
+</mapper>
+

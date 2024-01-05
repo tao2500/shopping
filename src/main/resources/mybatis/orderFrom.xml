@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="code.dao.orderFromDao">
+    <insert id="addOrderFrom" parameterType="code.pojo.orderFrom">
+        INSERT INTO `shopping`.`orderfrom` (`idOrderFrom`, `customerId`, `detail`, `shoppingAdd`, `total`, `status`, `joinTime`) VALUES (#{idOrderFrom}, #{customerId}, #{detail}, #{shoppingAdd}, #{total}, #{status}, #{joinTime});
+    </insert>
+    <select id="selectedAll" resultType="code.pojo.orderFrom">
+        select *
+        from shopping.orderfrom o
+        where true
+    </select>
+    <select id="selectedByCustomerId" parameterType="String" resultType="code.pojo.orderFrom">
+        select *
+        from shopping.orderfrom o
+        where o.customerId = #{customerId}
+    </select>
+    <select id="selectedByStatus" parameterType="String" resultType="code.pojo.orderFrom">
+        select *
+        from shopping.orderfrom o
+        where o.status = #{status}
+    </select>
+
+    <delete id="deleteOrderFrom" parameterType="String">
+        DELETE FROM `shopping`.`orderfrom` WHERE (`idOrderFrom` = #{idOrderFrom});
+    </delete>
+
+    <update id="upDataOrderFrom" parameterType="code.pojo.orderFrom">
+        UPDATE `shopping`.`orderfrom` SET `customerId` = #{customerId}, `detail` = #{detail}, `shoppingAdd` = #{shoppingAdd}, `total` = #{total}, `status` = #{status}, `joinTime` = #{joinTime} WHERE (`idOrderFrom` = #{idOrderFrom});
+    </update>
+</mapper>
+

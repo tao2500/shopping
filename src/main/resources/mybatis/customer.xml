@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="code.dao.customerDao">
+    <insert id="customerAdd" parameterType="code.pojo.customer">
+        INSERT INTO `shopping`.`customer` (`id`, `telephone`, `name`, `address`, `password`) VALUES (#{id},#{telephone},#{name},#{address},#{password});
+    </insert>
+    <select id="selectedCustomer" parameterType="String" resultType="code.pojo.customer">
+        select *
+        from shopping.customer c
+        where c.telephone = #{telephone}
+    </select>
+    <select id="selectedAll" parameterType="Integer" resultType="code.pojo.customer">
+        select *
+        from shopping.customer
+        where true
+    </select>
+
+    <delete id="deleteCustomer" parameterType="String">
+        DELETE FROM `shopping`.`customer` WHERE (`id` = #{id});
+    </delete>
+
+    <update id="upDataCustomer" parameterType="code.pojo.customer">
+        UPDATE `shopping`.`customer` SET `telephone` = #{telephone},`name` = #{name}, `address` = #{address}, `password` = #{password} WHERE (`id` = #{id});
+    </update>
+</mapper>
+

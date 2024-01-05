@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="code.dao.drugsDao">
+    <insert id="addDrugs" parameterType="code.pojo.drugs">
+        INSERT INTO `shopping`.`drugs` (`barCode`, `imgSrc`, `name`, `type`, `effect`, `count`, `size`, `price`, `expires`) VALUES (#{barCode},#{imgSrc},#{name},#{type},#{effect},#{count},#{size},#{price},#{expires});
+    </insert>
+    <select id="selectedAll" resultType="code.pojo.drugs">
+        select *
+        from shopping.drugs d
+        where true
+    </select>
+    <select id="selectedByName" parameterType="String" resultType="code.pojo.drugs">
+        select *
+        from shopping.drugs
+        where name like concat('%',#{name},'%')
+    </select>
+    <select id="selectedByType" parameterType="String" resultType="code.pojo.drugs">
+        select *
+        from shopping.drugs
+        where type like concat('%',#{type},'%')
+    </select>
+    <select id="selectedByEffect" parameterType="String" resultType="code.pojo.drugs">
+        select *
+        from shopping.drugs
+        where effect like concat('%',#{effect},'%')
+    </select>
+
+    <delete id="deleteDrugs" parameterType="String">
+        DELETE FROM `shopping`.`drugs` WHERE (`barCode` = #{barCode});
+    </delete>
+
+    <update id="upDataDrugs" parameterType="code.pojo.drugs">
+        UPDATE `shopping`.`drugs` SET `imgSrc` = #{imgSrc},`name` = #{name}, `type` = #{type}, `effect` = #{effect}, `count` = #{count}, `size` = #{size}, `price` = #{price}, `expires` = #{expires} WHERE (`barCode` = #{barCode});
+    </update>
+</mapper>
+
