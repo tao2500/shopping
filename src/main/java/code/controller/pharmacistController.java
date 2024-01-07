@@ -41,6 +41,25 @@ public class pharmacistController {
     @Resource
     private pharmacistDao cu;
 
+    @RequestMapping("login")
+    public void login(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        pharmacist flag = cu.login(request.getParameter("name"), request.getParameter("password"));
+        if (flag != null && !flag.getId().equals("")) {
+            logger.info("验证成功");
+            List<pharmacist> list = new ArrayList<pharmacist>();
+            pharmacist inform = cu.selectedPharmacistById(flag.getId());
+            list.add(inform);
+            ListObject listObject = new ListObject();
+            listObject.setItems(list);
+            listObject.setCode(StatusCode.CODE_SUCCESS);
+            listObject.setMsg("登录成功");
+            ResponseUtils.renderJson(response, JackJsonUtils.toJson(listObject));
+        } else {
+            logger.info("验证失败");
+            response.sendError(500, "账号或密码错误");
+        }
+    }
+
     @RequestMapping("selectedAll")
     protected void selectedAllPharmacist(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         List<pharmacist> list = new ArrayList<pharmacist>();

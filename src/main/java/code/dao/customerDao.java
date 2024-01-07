@@ -23,4 +23,5 @@ public interface customerDao {
     public customer selectedCustomer(String telephone);
     public boolean deleteCustomer(String id);
     public boolean upDataCustomer(customer c);
+    public customer login(String telephone, String password);
 }

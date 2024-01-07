@@ -47,7 +47,29 @@ public class customerController {
     @Resource
     private customerDao cu;
 
-    //143  150
+    @RequestMapping("login")
+    public void login(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        logger.info("控制台login" + "telephone=" + request.getParameter("telephone") + "password=" + request.getParameter("password") + "request=" + request);
+        customer flag = cu.login(request.getParameter("telephone"), request.getParameter("password"));
+        // 如果flag不为空，则说明账号密码正确
+        if (flag != null && !flag.getId().equals("")) {
+            logger.info("验证成功");
+            List<customer> list = new ArrayList<customer>();
+            customer inform = cu.selectedCustomer(request.getParameter("telephone"));
+            list.add(inform);
+            ListObject listObject = new ListObject();
+            listObject.setItems(list);
+            listObject.setCode(StatusCode.CODE_SUCCESS);
+            listObject.setMsg("登录成功");
+            ResponseUtils.renderJson(response, JackJsonUtils.toJson(listObject));
+        } else {
+            ListObject listObject = new ListObject();
+            listObject.setCode(StatusCode.CODE_ERROR);
+            listObject.setMsg("账号或密码错误");
+            ResponseUtils.renderJson(response, JackJsonUtils.toJson(listObject));
+        }
+    }
+
     @RequestMapping("selectedAll")  // 前端接口
     protected void selectedAllCustomer(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         List<customer> list = new ArrayList<customer>();
@@ -74,28 +96,42 @@ public class customerController {
 
     @RequestMapping(value = "/addCustomer")
     public void addCustomer(String[] account,HttpServletRequest request, HttpServletResponse response) {
+        logger.info("控制台" + "account=" + account + "request=" + request.getParameter("telephone"));
         customer c = new customer();
         c.setId(createId());
         c.setTelephone(account[0]);
         c.setName(account[1]);
         c.setAddress(account[2]);
         c.setPassword(account[3]);
-        if (account!=null){
-            while (cu.customerAdd(c)){
-                c.setId(createId());
-            }
+        if (cu.customerAdd(c)) {
+            ResponseUtils.renderJson(response, JackJsonUtils.toJson("添加成功"));
+        } else {
+            ResponseUtils.renderJson(response, JackJsonUtils.toJson("添加失败"));
         }
-        ResponseUtils.renderJson(response, JackJsonUtils.toJson("添加成功"));
    }
 
     @RequestMapping(value = "/addTwo")
-    public void addCustomerTwo(@RequestBody customer t, HttpServletResponse response) {
-        if (t != null) {
-            while (cu.customerAdd(t)) {
-                t.setId(createId());
-            }
+    public void addCustomerTwo(@RequestBody(required=false) customer t, HttpServletResponse response) {
+        System.out.println();
+        System.out.println();
+        logger.info("注册用户信息：" + "customer=" + t);
+        ListObject listObject = new ListObject();
+        customer c = cu.selectedCustomer(t.getTelephone()+"");
+        // 如果该手机号已经注册
+        if (c != null && !c.getId().equals("")) {
+            listObject.setCode(StatusCode.CODE_ERROR_PARAMETER);
+            listObject.setMsg("该手机号已经注册，请直接登录");
+            ResponseUtils.renderJson(response, JackJsonUtils.toJson(listObject));
+            return;
         }
-        ResponseUtils.renderJson(response, JackJsonUtils.toJson("添加成功"));
+        if (cu.customerAdd(t)) {
+            listObject.setCode(StatusCode.CODE_SUCCESS);
+            listObject.setMsg("注册成功");
+        } else {
+            listObject.setCode(StatusCode.CODE_ERROR);
+            listObject.setMsg("注册失败");
+        }
+        ResponseUtils.renderJson(response, JackJsonUtils.toJson(listObject));
     }
 
     @RequestMapping(value = "/delete")

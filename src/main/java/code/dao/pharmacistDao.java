@@ -23,4 +23,5 @@ public interface pharmacistDao {
     public pharmacist selectedPharmacistById(String id);
     public boolean deletePharmacist(String id);
     public boolean upDataPharmacist(pharmacist p);
+    public pharmacist login(String name, String password);
 }

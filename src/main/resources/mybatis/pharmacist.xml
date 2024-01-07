@@ -16,6 +16,11 @@
         from shopping.pharmacist p
         where true
     </select>
+    <select id="login" parameterType="String" resultType="code.pojo.pharmacist">
+        select *
+        from shopping.pharmacist p
+        where p.name = #{param1} and p.password = #{param2}
+    </select>
 
     <delete id="deletePharmacist" parameterType="String">
         DELETE FROM `shopping`.`pharmacist` WHERE (`id` = #{id});

@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="code.dao.customerDao">
     <insert id="customerAdd" parameterType="code.pojo.customer">
-        INSERT INTO `shopping`.`customer` (`id`, `telephone`, `name`, `address`, `password`) VALUES (#{id},#{telephone},#{name},#{address},#{password});
+        INSERT INTO `shopping`.`customer` (`id`, `telephone`, `name`, `address`, `password`) VALUES (REPLACE(UUID(),"-",""),#{telephone},#{name},#{address},#{password});
     </insert>
     <select id="selectedCustomer" parameterType="String" resultType="code.pojo.customer">
         select *
@@ -15,6 +15,11 @@
         select *
         from shopping.customer
         where true
+    </select>
+    <select id="login" parameterType="String" resultType="code.pojo.customer">
+        select *
+        from shopping.customer c
+        where c.telephone = #{param1} and c.password = #{param2}
     </select>
 
     <delete id="deleteCustomer" parameterType="String">
