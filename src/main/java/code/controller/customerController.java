@@ -142,8 +142,16 @@ public class customerController {
 
     @RequestMapping(value = "/upDate")
     public void upDataCustomer(@RequestBody customer c, HttpServletResponse response) {
-        cu.upDataCustomer(c);
-        ResponseUtils.renderJson(response, JackJsonUtils.toJson("修改成功"));
+        logger.info("修改用户信息：" + "customer=" + c);
+        ListObject listObject = new ListObject();
+        if(cu.upDataCustomer(c)){
+            listObject.setCode(StatusCode.CODE_SUCCESS);
+            listObject.setMsg("修改成功");
+        }else {
+            listObject.setCode(StatusCode.CODE_ERROR);
+            listObject.setMsg("修改失败");
+        }
+        ResponseUtils.renderJson(response, JackJsonUtils.toJson(listObject));
     }
 
     public String createId(){

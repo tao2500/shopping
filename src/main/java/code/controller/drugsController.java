@@ -45,7 +45,7 @@ public class drugsController {
 
     //143  150
     @RequestMapping("selectedAll")  // 前端接口
-    protected void selectedAlldrugs(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void selectedAllDrugs(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         List<drugs> list = new ArrayList<drugs>();
         list = cu.selectedAll();
         ListObject listObject = new ListObject();
@@ -56,12 +56,20 @@ public class drugsController {
     }
 
     @RequestMapping(value = "/selectedByName")
-    public void selectedByName(String name, HttpServletRequest request, HttpServletResponse response) {
-        List<drugs> list = cu.selectedByName(name);
+    public void selectedByName(HttpServletRequest request, HttpServletResponse response) {
+        System.out.println();
+        System.out.println();
+        logger.info("控制台selectedByName" + request.toString() + "request=" + request.getParameter("name"));
+        List<drugs> list = cu.selectedByName(request.getParameter("name"));
         ListObject listObject = new ListObject();
-        listObject.setItems(list);
-        listObject.setCode(StatusCode.CODE_SUCCESS);
-        listObject.setMsg("获取成功");
+        if (list.size() == 0) {
+            listObject.setCode(StatusCode.CODE_NULL);
+            listObject.setMsg("未找到相关药品");
+        } else {
+            listObject.setItems(list);
+            listObject.setCode(StatusCode.CODE_SUCCESS);
+            listObject.setMsg("获取成功");
+        }
         ResponseUtils.renderJson(response, JackJsonUtils.toJson(listObject));
     }
 

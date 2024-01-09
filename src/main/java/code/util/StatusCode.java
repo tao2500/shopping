@@ -16,4 +16,6 @@ public class StatusCode {
 
     public static String CODE_ERROR_EXIST_OPERATION = "403";      //已操作
 
+    public static String CODE_NULL = "100";      //未找到结果
+
 }
