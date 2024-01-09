@@ -74,12 +74,20 @@ public class drugsController {
     }
 
     @RequestMapping(value = "/selectedByType")
-    public void selectedByType(String type, HttpServletRequest request, HttpServletResponse response) {
-        List<drugs> list = cu.selectedByType(type);
+    public void selectedByType(HttpServletRequest request, HttpServletResponse response) {
+        System.out.println();
+        System.out.println();
+        logger.info("控制台selectedByType" + request.toString() + "request=" + request.getParameter("name"));
+        List<drugs> list = cu.selectedByType(request.getParameter("type"));
         ListObject listObject = new ListObject();
-        listObject.setItems(list);
-        listObject.setCode(StatusCode.CODE_SUCCESS);
-        listObject.setMsg("获取成功");
+        if (list.size() == 0) {
+            listObject.setCode(StatusCode.CODE_NULL);
+            listObject.setMsg("没有相关药品");
+        } else {
+            listObject.setItems(list);
+            listObject.setCode(StatusCode.CODE_SUCCESS);
+            listObject.setMsg("获取" + request.getParameter("type") + "类药品成功");
+        }
         ResponseUtils.renderJson(response, JackJsonUtils.toJson(listObject));
     }
 
@@ -90,6 +98,30 @@ public class drugsController {
         listObject.setItems(list);
         listObject.setCode(StatusCode.CODE_SUCCESS);
         listObject.setMsg("获取成功");
+        ResponseUtils.renderJson(response, JackJsonUtils.toJson(listObject));
+    }
+
+    @RequestMapping(value = "/selectedAllType")
+    public void selectedAllType(HttpServletRequest request, HttpServletResponse response) {
+        List<drugs> list = cu.selectedAll();
+        ListObject listObject = new ListObject();
+        if(list.size() == 0){
+            listObject.setCode(StatusCode.CODE_NULL);
+            listObject.setMsg("商城暂无药品");
+        }else{
+            List<String> list1 = new ArrayList<String>();
+            for (code.pojo.drugs drugs : list) {
+                String[] arr = drugs.getType().split(",");
+                for(String s : arr){
+                    if (!list1.contains(s)) {
+                        list1.add(s);
+                    }
+                }
+            }
+            listObject.setItems(list1);
+            listObject.setCode(StatusCode.CODE_SUCCESS);
+            listObject.setMsg("所有药品类型已返回");
+        }
         ResponseUtils.renderJson(response, JackJsonUtils.toJson(listObject));
     }
 
