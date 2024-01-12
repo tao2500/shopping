@@ -53,7 +53,7 @@ public class orderFromController {
     }
 
     @RequestMapping(value = "/selectedByStatus")
-    public void selectedByStatus(String status, HttpServletRequest request, HttpServletResponse response) {
+    public void selectedByStatus(HttpServletRequest request, HttpServletResponse response) {
         System.out.println();
         System.out.println();
         logger.info("status:" + request.getParameter("status"));

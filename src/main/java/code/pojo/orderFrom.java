@@ -18,6 +18,7 @@ public class orderFrom {
     private double total;
     private String status;
     private String joinTime;
+    private String reasons;
 
     public String getIdOrderFrom() {
         return idOrderFrom;
@@ -91,6 +92,22 @@ public class orderFrom {
         this.joinTime = joinTime;
     }
 
+    public String getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(String customerId) {
+        this.customerId = customerId;
+    }
+
+    public String getReasons() {
+        return reasons;
+    }
+
+    public void setReasons(String reasons) {
+        this.reasons = reasons;
+    }
+
     @Override
     public String toString() {
         return "orderFrom{" +
@@ -103,6 +120,7 @@ public class orderFrom {
                 ", total=" + total +
                 ", status='" + status + '\'' +
                 ", joinTime='" + joinTime + '\'' +
+                ", reasons='" + reasons + '\'' +
                 '}';
     }
 }

@@ -62,8 +62,7 @@ public class pharmacistController {
 
     @RequestMapping("selectedAll")
     protected void selectedAllPharmacist(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List<pharmacist> list = new ArrayList<pharmacist>();
-        list = cu.selectedAll();
+        List<pharmacist> list = cu.selectedAll();
         ListObject listObject = new ListObject();
         listObject.setItems(list);
         listObject.setCode(StatusCode.CODE_SUCCESS);
@@ -72,14 +71,19 @@ public class pharmacistController {
     }
 
     @RequestMapping(value = "/selectedById")
-    public void selectedById(String id, HttpServletRequest request, HttpServletResponse response) {
-        pharmacist inform = cu.selectedPharmacistById(id);
-        List<pharmacist> list = new ArrayList<pharmacist>();
-        list.add(inform);
+    public void selectedById(HttpServletRequest request, HttpServletResponse response) {
+        pharmacist inform = cu.selectedPharmacistById(request.getParameter("telephone"));
         ListObject listObject = new ListObject();
-        listObject.setItems(list);
-        listObject.setCode(StatusCode.CODE_SUCCESS);
-        listObject.setMsg("获取成功");
+        if (inform != null) {
+            List<pharmacist> list = new ArrayList<pharmacist>();
+            list.add(inform);
+            listObject.setItems(list);
+            listObject.setCode(StatusCode.CODE_SUCCESS);
+            listObject.setMsg("获取成功");
+        } else {
+            listObject.setCode(StatusCode.CODE_NULL);
+            listObject.setMsg("查无此店员");
+        }
         ResponseUtils.renderJson(response, JackJsonUtils.toJson(listObject));
     }
 
@@ -98,23 +102,89 @@ public class pharmacistController {
 
     @RequestMapping(value = "/addTwo")
     public void addPharmacistTwo(@RequestBody pharmacist t, HttpServletResponse response) throws IOException {
-        if (t != null) {
-            if (cu.addPharmacist(t)) {
-                response.sendError(500,"id重复,添加失败");
-            }
+        ListObject listObject = new ListObject();
+        if (checkNo(t, response, listObject)) return;
+        if (cu.selectedPharmacistById(t.getId()) != null) {
+            listObject.setCode(StatusCode.CODE_NULL);
+            listObject.setMsg("该手机号已注册,添加失败");
+            ResponseUtils.renderJson(response, JackJsonUtils.toJson(listObject));
+            return;
         }
-        ResponseUtils.renderJson(response, JackJsonUtils.toJson("添加成功"));
+        if (cu.addPharmacist(t)) {
+            listObject.setCode(StatusCode.CODE_SUCCESS);
+            listObject.setMsg("添加成功");
+        } else {
+            listObject.setCode(StatusCode.CODE_ERROR);
+            listObject.setMsg("添加失败");
+        }
+        ResponseUtils.renderJson(response, JackJsonUtils.toJson(listObject));
     }
 
     @RequestMapping(value = "/delete")
     public void deletePharmacist(@RequestBody pharmacist c, HttpServletResponse response) {
-        cu.deletePharmacist(c.getId());
-        ResponseUtils.renderJson(response, JackJsonUtils.toJson("删除成功"));
+        ListObject listObject = new ListObject();
+        if (cu.selectedPharmacistById(c.getId()) == null) {
+            listObject.setCode(StatusCode.CODE_NULL);
+            listObject.setMsg("查无此店员");
+            ResponseUtils.renderJson(response, JackJsonUtils.toJson(listObject));
+            return;
+        }
+        if (cu.deletePharmacist(c.getId())) {
+            listObject.setCode(StatusCode.CODE_SUCCESS);
+            listObject.setMsg("删除成功");
+        } else {
+            listObject.setCode(StatusCode.CODE_ERROR);
+            listObject.setMsg("删除失败");
+        }
+        ResponseUtils.renderJson(response, JackJsonUtils.toJson(listObject));
     }
 
     @RequestMapping(value = "/upDate")
     public void upDataPharmacist(@RequestBody pharmacist c, HttpServletResponse response) {
-        cu.upDataPharmacist(c);
-        ResponseUtils.renderJson(response, JackJsonUtils.toJson("修改成功"));
+        ListObject listObject = new ListObject();
+        if (checkNo(c, response, listObject)) return;
+        if (cu.selectedPharmacistById(c.getId()) == null) {
+            listObject.setCode(StatusCode.CODE_NULL);
+            listObject.setMsg("查无此店员");
+            ResponseUtils.renderJson(response, JackJsonUtils.toJson(listObject));
+            return;
+        }
+        if (cu.upDataPharmacist(c)) {
+            listObject.setCode(StatusCode.CODE_SUCCESS);
+            listObject.setMsg("修改成功");
+        } else {
+            listObject.setCode(StatusCode.CODE_ERROR);
+            listObject.setMsg("修改失败");
+        }
+        ResponseUtils.renderJson(response, JackJsonUtils.toJson(listObject));
+    }
+
+    // 检查是否有空值，true为有空值
+    private boolean checkNo(@RequestBody pharmacist t, HttpServletResponse response, ListObject listObject) {
+        if (t.getId() == null || t.getId().equals("")) {
+            listObject.setCode(StatusCode.CODE_NULL);
+            listObject.setMsg("id不能为空");
+            ResponseUtils.renderJson(response, JackJsonUtils.toJson(listObject));
+            return true;
+        }
+        if (t.getName() == null || t.getName().equals("")) {
+            listObject.setCode(StatusCode.CODE_NULL);
+            listObject.setMsg("姓名不能为空");
+            ResponseUtils.renderJson(response, JackJsonUtils.toJson(listObject));
+            return true;
+        }
+        if (t.getPassword() == null || t.getPassword().equals("")) {
+            listObject.setCode(StatusCode.CODE_NULL);
+            listObject.setMsg("密码不能为空");
+            ResponseUtils.renderJson(response, JackJsonUtils.toJson(listObject));
+            return true;
+        }
+        if (t.getDuties() == null || t.getDuties().equals("")) {
+            listObject.setCode(StatusCode.CODE_NULL);
+            listObject.setMsg("职务不能为空");
+            ResponseUtils.renderJson(response, JackJsonUtils.toJson(listObject));
+            return true;
+        }
+        return false;
     }
 }
