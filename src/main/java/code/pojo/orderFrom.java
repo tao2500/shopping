@@ -10,9 +10,11 @@ package code.pojo;
  */
 public class orderFrom {
     private String idOrderFrom;
-    private String telephone;
+    private String customerId;
     private String detail;
     private String shoppingAdd;
+    private String delivery;
+    private String waybillNumber;
     private double total;
     private String status;
     private String joinTime;
@@ -26,11 +28,11 @@ public class orderFrom {
     }
 
     public String getTelephone() {
-        return telephone;
+        return customerId;
     }
 
-    public void setTelephone(String telephone) {
-        this.telephone = telephone;
+    public void setTelephone(String customerId) {
+        this.customerId = customerId;
     }
 
     public String getDetail() {
@@ -47,6 +49,22 @@ public class orderFrom {
 
     public void setShoppingAdd(String shoppingAdd) {
         this.shoppingAdd = shoppingAdd;
+    }
+
+    public String getDelivery() {
+        return delivery;
+    }
+
+    public void setDelivery(String delivery) {
+        this.delivery = delivery;
+    }
+
+    public String getWaybillNumber() {
+        return waybillNumber;
+    }
+
+    public void setWaybillNumber(String waybillNumber) {
+        this.waybillNumber = waybillNumber;
     }
 
     public double getTotal() {
@@ -77,9 +95,11 @@ public class orderFrom {
     public String toString() {
         return "orderFrom{" +
                 "idOrderFrom='" + idOrderFrom + '\'' +
-                ", telephone='" + telephone + '\'' +
+                ", customerId='" + customerId + '\'' +
                 ", detail='" + detail + '\'' +
                 ", shoppingAdd='" + shoppingAdd + '\'' +
+                ", delivery='" + delivery + '\'' +
+                ", waybillNumber='" + waybillNumber + '\'' +
                 ", total=" + total +
                 ", status='" + status + '\'' +
                 ", joinTime='" + joinTime + '\'' +

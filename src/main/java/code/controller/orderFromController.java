@@ -54,11 +54,19 @@ public class orderFromController {
 
     @RequestMapping(value = "/selectedByStatus")
     public void selectedByStatus(String status, HttpServletRequest request, HttpServletResponse response) {
-        List<orderFrom> list = cu.selectedByStatus(status);
+        System.out.println();
+        System.out.println();
+        logger.info("status:" + request.getParameter("status"));
+        List<orderFrom> list = cu.selectedByStatus(request.getParameter("status"));
         ListObject listObject = new ListObject();
-        listObject.setItems(list);
-        listObject.setCode(StatusCode.CODE_SUCCESS);
-        listObject.setMsg("获取成功");
+        if (list != null) {
+            listObject.setItems(list);
+            listObject.setCode(StatusCode.CODE_SUCCESS);
+            listObject.setMsg("获取成功");
+        } else {
+            listObject.setCode(StatusCode.CODE_ERROR);
+            listObject.setMsg("暂无该类型订单");
+        }
         ResponseUtils.renderJson(response, JackJsonUtils.toJson(listObject));
     }
 
@@ -84,23 +92,40 @@ public class orderFromController {
     }
 
     @RequestMapping(value = "/deleteOrderFrom")
-    public void deleteOrderFrom(@RequestBody orderFrom c, HttpServletResponse response) {
-        if(cu.deleteOrderFrom(c.getIdOrderFrom())) {
-            ResponseUtils.renderJson(response, JackJsonUtils.toJson("删除成功"));
-        } else {
-            ResponseUtils.renderJson(response, JackJsonUtils.toJson("删除失败"));
+    public void deleteOrderFrom(HttpServletRequest request, HttpServletResponse response) {
+        ListObject listObject = new ListObject();
+        if (request.getParameter("idOrderFrom") == null || request.getParameter("idOrderFrom").equals("")) {
+            listObject.setCode(StatusCode.CODE_ERROR);
+            listObject.setMsg("订单编号不能为空");
+            ResponseUtils.renderJson(response, JackJsonUtils.toJson(listObject));
+            return;
         }
+        if (cu.deleteOrderFrom(request.getParameter("idOrderFrom"))) {
+            listObject.setCode(StatusCode.CODE_SUCCESS);
+            listObject.setMsg("退单成功");
+        } else {
+            listObject.setCode(StatusCode.CODE_ERROR);
+            listObject.setMsg("退单失败");
+        }
+        ResponseUtils.renderJson(response, JackJsonUtils.toJson(listObject));
     }
 
     @RequestMapping(value = "/upDataOrderFrom")
     public void upDataOrderFrom(@RequestBody orderFrom c, HttpServletResponse response) {
+        ListObject listObject = new ListObject();
         if(c.getIdOrderFrom() == null || c.getIdOrderFrom().equals("")){
-            ResponseUtils.renderJson(response, JackJsonUtils.toJson("订单编号不能为空"));
+            listObject.setCode(StatusCode.CODE_ERROR);
+            listObject.setMsg("订单编号不能为空");
+            ResponseUtils.renderJson(response, JackJsonUtils.toJson(listObject));
+            return;
         }
         if(cu.upDataOrderFrom(c)){
-            ResponseUtils.renderJson(response, JackJsonUtils.toJson("修改成功"));
+            listObject.setCode(StatusCode.CODE_SUCCESS);
+            listObject.setMsg("发货成功");
         }else{
-            ResponseUtils.renderJson(response, JackJsonUtils.toJson("修改失败"));
+            listObject.setCode(StatusCode.CODE_ERROR);
+            listObject.setMsg("发货失败");
         }
+        ResponseUtils.renderJson(response, JackJsonUtils.toJson(listObject));
     }
 }

@@ -127,30 +127,48 @@ public class drugsController {
 
     @RequestMapping(value = "/addTwo")
     public void addDrugsTwo(@RequestBody drugs t, HttpServletResponse response) {
+        ListObject listObject = new ListObject();
         if (t != null) {
             if (cu.addDrugs(t)) {
-                ResponseUtils.renderJson(response, JackJsonUtils.toJson("添加成功"));
+                listObject.setCode(StatusCode.CODE_SUCCESS);
+                listObject.setMsg("添加成功");
             } else {
-                ResponseUtils.renderJson(response, JackJsonUtils.toJson("id重复"));
+                listObject.setCode(StatusCode.CODE_ERROR);
+                listObject.setMsg("添加失败");
             }
         }
+        ResponseUtils.renderJson(response, JackJsonUtils.toJson(listObject));
     }
 
     @RequestMapping(value = "/deleteDrugs")
     public void deleteDrugs(@RequestBody drugs c, HttpServletResponse response) {
-        cu.deleteDrugs(c.getBarCode());
-        ResponseUtils.renderJson(response, JackJsonUtils.toJson("删除成功"));
+        ListObject listObject = new ListObject();
+        if(cu.deleteDrugs(c.getBarCode())){
+            listObject.setCode(StatusCode.CODE_SUCCESS);
+            listObject.setMsg("已下架");
+        }else{
+            listObject.setCode(StatusCode.CODE_ERROR);
+            listObject.setMsg("下架失败！请联系管理员");
+        }
+        ResponseUtils.renderJson(response, JackJsonUtils.toJson(listObject));
     }
 
     @RequestMapping(value = "/upDataDrugs")
     public void upDataDrugs(@RequestBody drugs c, HttpServletResponse response) {
+        ListObject listObject = new ListObject();
         if(c.getBarCode() == null || c.getBarCode().equals("")){
-            ResponseUtils.renderJson(response, JackJsonUtils.toJson("条形码不能为空"));
+            listObject.setCode(StatusCode.CODE_NULL);
+            listObject.setMsg("条形码不能为空");
+            ResponseUtils.renderJson(response, JackJsonUtils.toJson(listObject));
+            return;
         }
         if(cu.upDataDrugs(c)){
-            ResponseUtils.renderJson(response, JackJsonUtils.toJson("修改成功"));
+            listObject.setCode(StatusCode.CODE_SUCCESS);
+            listObject.setMsg("修改成功");
         }else{
-            ResponseUtils.renderJson(response, JackJsonUtils.toJson("修改失败"));
+            listObject.setCode(StatusCode.CODE_ERROR);
+            listObject.setMsg("修改失败");
         }
+        ResponseUtils.renderJson(response, JackJsonUtils.toJson(listObject));
     }
 }
