@@ -11,6 +11,11 @@
         from shopping.customer c
         where c.telephone = #{telephone}
     </select>
+    <select id="selectedCustomerById" parameterType="String" resultType="code.pojo.customer">
+        select *
+        from shopping.customer c
+        where c.id = #{id}
+    </select>
     <select id="selectedAll" parameterType="Integer" resultType="code.pojo.customer">
         select *
         from shopping.customer

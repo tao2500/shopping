@@ -1,6 +1,7 @@
 package code.controller;
 
 import code.dao.customerDao;
+import code.pojo.pharmacist;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mybatis.spring.annotation.MapperScan;
@@ -72,43 +73,36 @@ public class customerController {
 
     @RequestMapping("selectedAll")  // 前端接口
     protected void selectedAllCustomer(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List<customer> list = new ArrayList<customer>();
-        list = cu.selectedAll();
+        List<customer> list = cu.selectedAll();
         ListObject listObject = new ListObject();
-        listObject.setItems(list);
-        listObject.setCode(StatusCode.CODE_SUCCESS);
-        listObject.setMsg("获取成功");
+        if (list != null) {
+            listObject.setItems(list);
+            listObject.setCode(StatusCode.CODE_SUCCESS);
+            listObject.setMsg("获取成功");
+        } else {
+            listObject.setCode(StatusCode.CODE_ERROR);
+            listObject.setMsg("暂无会员");
+        }
         ResponseUtils.renderJson(response, JackJsonUtils.toJson(listObject));
     }
 
     @RequestMapping(value = "/selectedByTelephone")
-    public void selectedByTelephone(String telephone, HttpServletRequest request, HttpServletResponse response) {
-        logger.info("selectedByTelephone" + "telephone=" + telephone + "request=" + request);
+    public void selectedByTelephone(HttpServletRequest request, HttpServletResponse response) {
+        logger.info("selectedByTelephone" + "request=" + request);
         customer inform = cu.selectedCustomer(request.getParameter("telephone"));
         List<customer> list = new ArrayList<customer>();
         list.add(inform);
         ListObject listObject = new ListObject();
-        listObject.setItems(list);
-        listObject.setCode(StatusCode.CODE_SUCCESS);
-        listObject.setMsg("获取成功");
+        if (inform != null) {
+            listObject.setItems(list);
+            listObject.setCode(StatusCode.CODE_SUCCESS);
+            listObject.setMsg("获取成功");
+        } else {
+            listObject.setCode(StatusCode.CODE_ERROR);
+            listObject.setMsg("无此会员");
+        }
         ResponseUtils.renderJson(response, JackJsonUtils.toJson(listObject));
     }
-
-    @RequestMapping(value = "/addCustomer")
-    public void addCustomer(String[] account,HttpServletRequest request, HttpServletResponse response) {
-        logger.info("控制台" + "account=" + account + "request=" + request.getParameter("telephone"));
-        customer c = new customer();
-        c.setId(createId());
-        c.setTelephone(account[0]);
-        c.setName(account[1]);
-        c.setAddress(account[2]);
-        c.setPassword(account[3]);
-        if (cu.customerAdd(c)) {
-            ResponseUtils.renderJson(response, JackJsonUtils.toJson("添加成功"));
-        } else {
-            ResponseUtils.renderJson(response, JackJsonUtils.toJson("添加失败"));
-        }
-   }
 
     @RequestMapping(value = "/addTwo")
     public void addCustomerTwo(@RequestBody(required=false) customer t, HttpServletResponse response) {
@@ -135,9 +129,24 @@ public class customerController {
     }
 
     @RequestMapping(value = "/delete")
-    public void deleteCustomer(@RequestBody customer c, HttpServletResponse response) {
-        cu.deleteCustomer(c.getId());
-        ResponseUtils.renderJson(response, JackJsonUtils.toJson("删除成功"));
+    public void deleteCustomer(@RequestBody pharmacist cus, HttpServletResponse response) {
+        logger.info("删除用户信息：" + "id=" + cus.getId());
+        customer c = cu.selectedCustomerById(cus.getId());
+        ListObject listObject = new ListObject();
+        if (c == null || c.getId().equals("")) {
+            listObject.setCode(StatusCode.CODE_ERROR_PARAMETER);
+            listObject.setMsg("删除失败，无此会员");
+            ResponseUtils.renderJson(response, JackJsonUtils.toJson(listObject));
+            return;
+        }
+        if (cu.deleteCustomer(cus.getId())) {
+            listObject.setCode(StatusCode.CODE_SUCCESS);
+            listObject.setMsg("删除成功");
+        } else {
+            listObject.setCode(StatusCode.CODE_ERROR);
+            listObject.setMsg("删除失败");
+        }
+        ResponseUtils.renderJson(response, JackJsonUtils.toJson(listObject));
     }
 
     @RequestMapping(value = "/upDate")
