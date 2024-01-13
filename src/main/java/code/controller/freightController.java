@@ -40,6 +40,25 @@ public class freightController {
     @Resource
     private freightDao cu;
 
+    @RequestMapping(value = "/selectedAll")
+    public void selectedAllFreight(HttpServletRequest request, HttpServletResponse response) {
+        System.out.println();
+        System.out.println();
+        logger.info("控制台selectedAll" + request.toString());
+        List<freight> list = new ArrayList<freight>();
+        list = cu.selectedAll();
+        ListObject listObject = new ListObject();
+        if (list.size() == 0) {
+            listObject.setCode(StatusCode.CODE_NULL);
+            listObject.setMsg("未查询到运费");
+        } else {
+            listObject.setItems(list);
+            listObject.setCode(StatusCode.CODE_SUCCESS);
+            listObject.setMsg("获取运费成功");
+        }
+        ResponseUtils.renderJson(response, JackJsonUtils.toJson(listObject));
+    }
+
     @RequestMapping(value = "/selectedFreight")
     public void selectedFreightByCity(HttpServletRequest request, HttpServletResponse response) {
         System.out.println();

@@ -4,12 +4,17 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="code.dao.freightDao">
     <insert id="addFreight" parameterType="code.pojo.freight">
-        INSERT INTO `shopping`.`freight` (id, type, price, cities) VALUE (#{id},#{type},#{price},#{cities});
+        INSERT INTO `shopping`.`freight` (id, type, price, cities) VALUE (REPLACE(UUID(),"-",""),#{type},#{price},#{cities});
     </insert>
     <select id="selectedFreight" resultType="code.pojo.freight">
         select *
         from shopping.freight f
         where f.cities like concat('%',#{cities},'%')
+    </select>
+    <select id="selectedAll" resultType="code.pojo.freight">
+        select *
+        from shopping.freight f
+        where true
     </select>
     <delete id="deleteFreight" parameterType="String">
         delete from shopping.freight f
