@@ -1,6 +1,7 @@
 package code.controller;
 
 import code.dao.orderFromDao;
+import code.pojo.customer;
 import code.pojo.orderFrom;
 import code.util.JackJsonUtils;
 import code.util.ListObject;
@@ -92,15 +93,18 @@ public class orderFromController {
     }
 
     @RequestMapping(value = "/deleteOrderFrom")
-    public void deleteOrderFrom(HttpServletRequest request, HttpServletResponse response) {
+    public void deleteOrderFrom(@RequestBody orderFrom o, HttpServletResponse response) {
+        System.out.println();
+        System.out.println();
+        logger.info("idOrderFrom:" + o.getIdOrderFrom());
         ListObject listObject = new ListObject();
-        if (request.getParameter("idOrderFrom") == null || request.getParameter("idOrderFrom").equals("")) {
+        if (o.getIdOrderFrom() == null || o.getIdOrderFrom().equals("")) {
             listObject.setCode(StatusCode.CODE_ERROR);
             listObject.setMsg("订单编号不能为空");
             ResponseUtils.renderJson(response, JackJsonUtils.toJson(listObject));
             return;
         }
-        if (cu.deleteOrderFrom(request.getParameter("idOrderFrom"))) {
+        if (cu.deleteOrderFrom(o.getIdOrderFrom())) {
             listObject.setCode(StatusCode.CODE_SUCCESS);
             listObject.setMsg("退单成功");
         } else {
@@ -121,10 +125,10 @@ public class orderFromController {
         }
         if(cu.upDataOrderFrom(c)){
             listObject.setCode(StatusCode.CODE_SUCCESS);
-            listObject.setMsg("发货成功");
+            listObject.setMsg("订单状态更新成功");
         }else{
             listObject.setCode(StatusCode.CODE_ERROR);
-            listObject.setMsg("发货失败");
+            listObject.setMsg("订单状态更新失败");
         }
         ResponseUtils.renderJson(response, JackJsonUtils.toJson(listObject));
     }

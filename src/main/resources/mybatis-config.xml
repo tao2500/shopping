@@ -22,5 +22,6 @@
         <mapper resource="mybatis/orderFrom.xml"/>
         <mapper resource="mybatis/pharmacist.xml"/>
         <mapper resource="mybatis/shoppingCart.xml"/>
+        <mapper resource="mybatis/freight.xml"/>
     </mappers>
 </configuration>
