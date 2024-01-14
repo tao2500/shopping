@@ -4,6 +4,8 @@ package code.util;
  */
 public class StatusCode {
 
+    public static final String CODE_FAIL =  "500";          //访问失败
+
     public static String CODE_SUCCESS = "200";          //访问成功
 
     public static String CODE_ERROR = "404";          //访问错误

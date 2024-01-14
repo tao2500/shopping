@@ -11,6 +11,11 @@
         from shopping.drugs d
         where true
     </select>
+    <select id="selectedByBarCode" resultType="code.pojo.drugs">
+        select *
+        from shopping.drugs d
+        where d.barCode = #{barCode}
+    </select>
     <select id="selectedByName" parameterType="String" resultType="code.pojo.drugs">
         select *
         from shopping.drugs

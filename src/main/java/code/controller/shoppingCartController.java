@@ -2,6 +2,7 @@ package code.controller;
 
 import code.dao.shoppingCartDao;
 import code.pojo.shoppingCart;
+import code.pojo.showShoppingCart;
 import code.util.JackJsonUtils;
 import code.util.ListObject;
 import code.util.ResponseUtils;
@@ -53,12 +54,36 @@ public class shoppingCartController {
     }
 
     @RequestMapping(value = "/selectedByCustomerId")
-    public void selectedByCustomerId(String id, HttpServletRequest request, HttpServletResponse response) {
-        List<shoppingCart> list = cu.selectedByCustomerId(id);
+    public void selectedByCustomerId(HttpServletRequest request, HttpServletResponse response) {
+        System.out.println();
+        System.out.println();
+        logger.info("selectedByCustomerId" + request.getParameter("customerId"));
+        List<shoppingCart> list = cu.selectedByCustomerId(request.getParameter("customerId"));
         ListObject listObject = new ListObject();
-        listObject.setItems(list);
+        if (list.size() == 0) {
+            listObject.setMsg("购物车为空");
+        } else {
+            listObject.setMsg("获取成功");
+        }
         listObject.setCode(StatusCode.CODE_SUCCESS);
-        listObject.setMsg("获取成功");
+        listObject.setItems(list);
+        ResponseUtils.renderJson(response, JackJsonUtils.toJson(listObject));
+    }
+
+    @RequestMapping(value = "/getMyShoppingCart")
+    public void getMyShoppingCart(HttpServletRequest request, HttpServletResponse response) {
+        System.out.println();
+        System.out.println();
+        logger.info("getMyShoppingCart" + request.getParameter("customerId"));
+        List<showShoppingCart> list = cu.getMyShoppingCart(request.getParameter("customerId"));
+        ListObject listObject = new ListObject();
+        if (list.size() == 0) {
+            listObject.setMsg("购物车为空");
+        } else {
+            listObject.setMsg("获取成功");
+        }
+        listObject.setCode(StatusCode.CODE_SUCCESS);
+        listObject.setItems(list);
         ResponseUtils.renderJson(response, JackJsonUtils.toJson(listObject));
     }
 

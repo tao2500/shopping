@@ -20,6 +20,7 @@ import java.util.List;
 public interface drugsDao {
     public boolean addDrugs(drugs dr);
     public List<drugs> selectedAll();
+    public List<drugs> selectedByBarCode(String barCode);
     public List<drugs> selectedByName(String name);
     public List<drugs> selectedByType(String type);
     public List<drugs> selectedByEffect(String effect);

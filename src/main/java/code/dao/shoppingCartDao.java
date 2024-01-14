@@ -1,6 +1,7 @@
 package code.dao;
 
 import code.pojo.shoppingCart;
+import code.pojo.showShoppingCart;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
@@ -21,6 +22,7 @@ public interface shoppingCartDao {
     public boolean addShoppingCart(shoppingCart sh);
     public List<shoppingCart> selectedAll();
     public List<shoppingCart> selectedByCustomerId(String customerId);
+    public List<showShoppingCart> getMyShoppingCart(String customerId);
     public boolean deleteShoppingCart(String customerId, String barCode);
     public boolean upDataShoppingCart(shoppingCart s);
     public boolean changeCount(String customerId, String barCode, String count);

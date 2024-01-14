@@ -55,6 +55,24 @@ public class drugsController {
         ResponseUtils.renderJson(response, JackJsonUtils.toJson(listObject));
     }
 
+    @RequestMapping(value = "/selectedByBarCode")
+    public void selectedByBarCode(HttpServletRequest request, HttpServletResponse response) {
+        System.out.println();
+        System.out.println();
+        logger.info("控制台selectedByBarCode" + request.getParameter("barCode"));
+        List<drugs> list = cu.selectedByBarCode(request.getParameter("barCode"));
+        ListObject listObject = new ListObject();
+        if (list.size() == 0) {
+            listObject.setCode(StatusCode.CODE_NULL);
+            listObject.setMsg("未找到相关药品");
+        } else {
+            listObject.setItems(list);
+            listObject.setCode(StatusCode.CODE_SUCCESS);
+            listObject.setMsg("获取成功");
+        }
+        ResponseUtils.renderJson(response, JackJsonUtils.toJson(listObject));
+    }
+
     @RequestMapping(value = "/selectedByName")
     public void selectedByName(HttpServletRequest request, HttpServletResponse response) {
         System.out.println();

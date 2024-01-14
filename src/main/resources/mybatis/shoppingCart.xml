@@ -14,7 +14,14 @@
     <select id="selectedByCustomerId" parameterType="String" resultType="code.pojo.shoppingCart">
         select *
         from shopping.shoppingcart s
-        where s.customerId = #{customerId}
+        where s.customerId = #{param1}
+    </select>
+
+    <select id="getMyShoppingCart" parameterType="String" resultType="code.pojo.showShoppingCart">
+        select s.id, s.customerId, s.barCode, d.name, d.price, s.count, s.status, s.joinTime
+        from shopping.shoppingcart s join shopping.drugs d
+        on s.barCode = d.barCode
+        and s.customerId = #{param1}
     </select>
 
     <delete id="deleteShoppingCart" parameterType="String">
