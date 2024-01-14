@@ -8,8 +8,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 /**
  * 处理跨域问题
  *
- * @Author ASUS
- * @Date 2022/08/10 0010 21:37
+ * @Author 2500594037@qq.com
+ * @Date 2023/12/30 21:37
  * @Version 1.0
  */
 @Configuration

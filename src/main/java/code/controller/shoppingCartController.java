@@ -64,33 +64,51 @@ public class shoppingCartController {
 
     @RequestMapping(value = "/addShoppingCart")
     public void addShoppingCart(@RequestBody shoppingCart t, HttpServletResponse response) {
+        ListObject listObject = new ListObject();
         if (t != null) {
             if (cu.addShoppingCart(t)) {
-                ResponseUtils.renderJson(response, JackJsonUtils.toJson("添加成功"));
+                listObject.setCode(StatusCode.CODE_SUCCESS);
+                listObject.setMsg("加入购物车成功");
             } else {
-                ResponseUtils.renderJson(response, JackJsonUtils.toJson("id重复"));
+                listObject.setCode(StatusCode.CODE_ERROR);
+                listObject.setMsg("加入购物车失败");
             }
+        } else {
+            listObject.setCode(StatusCode.CODE_ERROR);
+            listObject.setMsg("请传入正确的参数");
         }
+        ResponseUtils.renderJson(response, JackJsonUtils.toJson(listObject));
     }
 
     @RequestMapping(value = "/deleteShoppingCart")
     public void deleteShoppingCart(@RequestBody shoppingCart c, HttpServletResponse response) {
-        if(cu.deleteShoppingCart(c.getId())) {
-            ResponseUtils.renderJson(response, JackJsonUtils.toJson("删除成功"));
+        ListObject listObject = new ListObject();
+        if(cu.deleteShoppingCart(c.getCustomerId(), c.getBarCode())) {
+            listObject.setCode(StatusCode.CODE_SUCCESS);
+            listObject.setMsg("已从购物车移除");
         } else {
-            ResponseUtils.renderJson(response, JackJsonUtils.toJson("删除失败"));
+            listObject.setCode(StatusCode.CODE_ERROR);
+            listObject.setMsg("移除失败");
         }
+        ResponseUtils.renderJson(response, JackJsonUtils.toJson(listObject));
     }
 
-    @RequestMapping(value = "/upDataShoppingCart")
+    @RequestMapping(value = "/changeCount")
     public void upDataShoppingCart(@RequestBody shoppingCart c, HttpServletResponse response) {
+        ListObject listObject = new ListObject();
         if(c.getId() == null || c.getId().equals("")){
-            ResponseUtils.renderJson(response, JackJsonUtils.toJson("购物车id不能为空"));
+            listObject.setCode(StatusCode.CODE_ERROR);
+            listObject.setMsg("购物车id不能为空");
+            ResponseUtils.renderJson(response, JackJsonUtils.toJson(listObject));
+            return;
         }
-        if(cu.upDataShoppingCart(c)){
-            ResponseUtils.renderJson(response, JackJsonUtils.toJson("修改成功"));
+        if(cu.changeCount(c.getCustomerId(), c.getBarCode(), c.getCount())){
+            listObject.setCode(StatusCode.CODE_SUCCESS);
+            listObject.setMsg("商品数量修改成功");
         }else{
-            ResponseUtils.renderJson(response, JackJsonUtils.toJson("修改失败"));
+            listObject.setCode(StatusCode.CODE_ERROR);
+            listObject.setMsg("商品数量修改失败");
         }
+        ResponseUtils.renderJson(response, JackJsonUtils.toJson(listObject));
     }
 }

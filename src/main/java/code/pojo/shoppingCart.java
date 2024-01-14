@@ -10,9 +10,9 @@ package code.pojo;
  */
 public class shoppingCart {
     private String id;
-    private String telephone;
-    private String idOrderFrom;
-    private int count;
+    private String customerId;
+    private String barCode;
+    private String count;
     private String status;
     private String joinTime;
 
@@ -24,27 +24,27 @@ public class shoppingCart {
         this.id = id;
     }
 
-    public String getTelephone() {
-        return telephone;
+    public String getCustomerId() {
+        return customerId;
     }
 
-    public void setTelephone(String telephone) {
-        this.telephone = telephone;
+    public void setCustomerId(String customerId) {
+        this.customerId = customerId;
     }
 
-    public String getIdOrderFrom() {
-        return idOrderFrom;
+    public String getBarCode() {
+        return barCode;
     }
 
-    public void setIdOrderFrom(String idOrderFrom) {
-        this.idOrderFrom = idOrderFrom;
+    public void setBarCode(String barCode) {
+        this.barCode = barCode;
     }
 
-    public int getCount() {
+    public String getCount() {
         return count;
     }
 
-    public void setCount(int count) {
+    public void setCount(String count) {
         this.count = count;
     }
 
@@ -68,8 +68,8 @@ public class shoppingCart {
     public String toString() {
         return "shoppingCart{" +
                 "id='" + id + '\'' +
-                ", telephone='" + telephone + '\'' +
-                ", idOrderFrom='" + idOrderFrom + '\'' +
+                ", customerId='" + customerId + '\'' +
+                ", barCode='" + barCode + '\'' +
                 ", count=" + count +
                 ", status='" + status + '\'' +
                 ", joinTime='" + joinTime + '\'' +

@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="code.dao.shoppingCartDao">
     <insert id="addShoppingCart" parameterType="code.pojo.shoppingCart">
-        INSERT INTO `shopping`.`shoppingcart` (`id`, `customerId`, `barCode`, `count`, `status`, `joinTime`) VALUES (#{id}, #{telephone}, #{idOrderFrom}, #{count}, #{status}, #{joinTime});
+        INSERT INTO `shopping`.`shoppingcart` (`id`, `customerId`, `barCode`, `count`, `status`, `joinTime`) VALUES (REPLACE(UUID(),"-",""), #{customerId}, #{barCode}, #{count}, #{status}, #{joinTime});
     </insert>
     <select id="selectedAll" resultType="code.pojo.shoppingCart">
         select *
@@ -19,11 +19,16 @@
 
     <delete id="deleteShoppingCart" parameterType="String">
         DELETE FROM `shopping`.`shoppingcart`
-        WHERE (`id` = #{id});
+        WHERE (`customerId` = #{param1}
+        AND `barCode` = #{param2});
     </delete>
 
     <update id="upDataShoppingCart" parameterType="code.pojo.shoppingCart">
         UPDATE `shopping`.`shoppingcart` SET `customerId` = #{customerId}, `barCode` = #{barCode}, `count` = #{count}, `status` = #{status}, `joinTime` = #{joinTime} WHERE (`id` = #{id});
+    </update>
+
+    <update id="changeCount" parameterType="code.pojo.shoppingCart">
+        UPDATE `shopping`.`shoppingcart` SET `count` = #{param3} WHERE customerId = #{param1} AND barCode = #{param2};
     </update>
 </mapper>
 

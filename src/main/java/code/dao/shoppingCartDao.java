@@ -21,6 +21,7 @@ public interface shoppingCartDao {
     public boolean addShoppingCart(shoppingCart sh);
     public List<shoppingCart> selectedAll();
     public List<shoppingCart> selectedByCustomerId(String customerId);
-    public boolean deleteShoppingCart(String id);
+    public boolean deleteShoppingCart(String customerId, String barCode);
     public boolean upDataShoppingCart(shoppingCart s);
+    public boolean changeCount(String customerId, String barCode, String count);
 }
