@@ -80,12 +80,20 @@ public class orderFromController {
     }
 
     @RequestMapping(value = "/selectedByCustomerId")
-    public void selectedByCustomerId(String id, HttpServletRequest request, HttpServletResponse response) {
-        List<orderFrom> list = cu.selectedByCustomerId(id);
+    public void selectedByCustomerId(HttpServletRequest request, HttpServletResponse response) {
+        System.out.println();
+        logger.info("addOrderFromTwo:" + request.getParameter("customerId"));
+        System.out.println();
+        List<orderFrom> list = cu.selectedByCustomerId(request.getParameter("customerId"));
         ListObject listObject = new ListObject();
-        listObject.setItems(list);
-        listObject.setCode(StatusCode.CODE_SUCCESS);
-        listObject.setMsg("获取成功");
+        if (list != null){
+            listObject.setItems(list);
+            listObject.setCode(StatusCode.CODE_SUCCESS);
+            listObject.setMsg("获取成功");
+        } else {
+            listObject.setCode(StatusCode.CODE_NULL);
+            listObject.setMsg("暂无订单");
+        }
         ResponseUtils.renderJson(response, JackJsonUtils.toJson(listObject));
     }
 
@@ -127,6 +135,9 @@ public class orderFromController {
             if (cu.addOrderFrom(orderFrom)) {
                 listObject.setCode(StatusCode.CODE_SUCCESS);
                 listObject.setMsg("已创建订单");
+                // 根据订单创建时间及customerId查询生成的订单号，返回给前端
+                List<orderFrom> list = cu.getOrderIdByTimeAndCId(orderFrom.getJoinTime(), orderFrom.getCustomerId());
+                listObject.setItems(list);
             } else {
                 listObject.setCode(StatusCode.CODE_ERROR);
                 listObject.setMsg("创建订单失败");
@@ -171,6 +182,28 @@ public class orderFromController {
             return;
         }
         if(cu.upDataOrderFrom(c)){
+            listObject.setCode(StatusCode.CODE_SUCCESS);
+            listObject.setMsg("订单状态更新成功");
+        }else{
+            listObject.setCode(StatusCode.CODE_ERROR);
+            listObject.setMsg("订单状态更新失败");
+        }
+        ResponseUtils.renderJson(response, JackJsonUtils.toJson(listObject));
+    }
+
+    @RequestMapping(value = "/playOk")
+    public void playOk(HttpServletRequest request, HttpServletResponse response) {
+        System.out.println();
+        ListObject listObject = new ListObject();
+        logger.info("支付成功订单编号："+request.getParameter("idOrderFrom"));
+        System.out.println();
+        if(request.getParameter("idOrderFrom") == null || request.getParameter("idOrderFrom").equals("")){
+            listObject.setCode(StatusCode.CODE_ERROR);
+            listObject.setMsg("订单编号不能为空");
+            ResponseUtils.renderJson(response, JackJsonUtils.toJson(listObject));
+            return;
+        }
+        if(cu.playOk(request.getParameter("idOrderFrom"))){
             listObject.setCode(StatusCode.CODE_SUCCESS);
             listObject.setMsg("订单状态更新成功");
         }else{

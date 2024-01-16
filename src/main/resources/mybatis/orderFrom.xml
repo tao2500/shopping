@@ -21,6 +21,12 @@
         from shopping.orderfrom o
         where o.status = #{status}
     </select>
+    <select id="getOrderIdByTimeAndCId" parameterType="String" resultType="code.pojo.orderFrom">
+        select *
+        from shopping.orderfrom o
+        where o.joinTime = #{param1}
+        and o.customerId = #{param2}
+    </select>
 
     <delete id="deleteOrderFrom" parameterType="String">
         DELETE FROM `shopping`.`orderfrom` WHERE (`idOrderFrom` = #{idOrderFrom});
@@ -28,6 +34,9 @@
 
     <update id="upDataOrderFrom" parameterType="code.pojo.orderFrom">
         UPDATE `shopping`.`orderfrom` SET `customerId` = #{customerId}, `detail` = #{detail}, `shoppingAdd` = #{shoppingAdd}, `delivery` = #{delivery}, `waybillNumber` = #{waybillNumber}, `total` = #{total}, `status` = #{status}, `joinTime` = #{joinTime}, `reasons` = #{reasons} WHERE (`idOrderFrom` = #{idOrderFrom});
+    </update>
+    <update id="playOk" parameterType="code.pojo.orderFrom">
+        UPDATE `shopping`.`orderfrom` SET `status` = '待发货' WHERE (`idOrderFrom` = #{param1});
     </update>
 </mapper>
 
