@@ -17,6 +17,7 @@ public class showShoppingCart {
     private String count;
     private String status;
     private String joinTime;
+    private String address;
 
     public String getId() {
         return id;
@@ -82,6 +83,14 @@ public class showShoppingCart {
         this.joinTime = joinTime;
     }
 
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
     @Override
     public String toString() {
         return "showShoppingCart{" +
@@ -93,6 +102,7 @@ public class showShoppingCart {
                 ", count='" + count + '\'' +
                 ", status='" + status + '\'' +
                 ", joinTime='" + joinTime + '\'' +
+                ", address='" + address + '\'' +
                 '}';
     }
 }

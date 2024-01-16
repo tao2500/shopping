@@ -1,8 +1,11 @@
 package code.controller;
 
+import cn.hutool.json.JSON;
 import code.dao.orderFromDao;
+import code.dao.shoppingCartDao;
 import code.pojo.customer;
 import code.pojo.orderFrom;
+import code.pojo.showShoppingCart;
 import code.util.JackJsonUtils;
 import code.util.ListObject;
 import code.util.ResponseUtils;
@@ -19,8 +22,13 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+
+import static org.springframework.core.io.buffer.DataBufferUtils.readInputStream;
 
 /**
  * ClassName:orderFromController
@@ -81,15 +89,54 @@ public class orderFromController {
         ResponseUtils.renderJson(response, JackJsonUtils.toJson(listObject));
     }
 
+    @Resource
+    private shoppingCartDao car;
+
     @RequestMapping(value = "/addOrderFrom")
-    public void addOrderFromTwo(@RequestBody orderFrom t, HttpServletResponse response) {
-        if (t != null) {
-            if (cu.addOrderFrom(t)) {
-                ResponseUtils.renderJson(response, JackJsonUtils.toJson("添加成功"));
-            } else {
-                ResponseUtils.renderJson(response, JackJsonUtils.toJson("id重复"));
-            }
+    public void addOrderFromTwo(@RequestBody showShoppingCart[] s, HttpServletResponse response) throws IOException {
+        System.out.println();
+        System.out.println();
+        logger.info("addOrderFromTwo:" + s[0]);
+        System.out.println();
+        logger.info("addOrderFromTwo:" + s[0].getAddress());
+        // 计算结算药品及订单总价
+        String detail = "";
+        double sumMany = 0;
+        for (showShoppingCart ss : s) {
+            if (!detail.equals("")) detail += "，";
+            detail += ss.getName() +'、' + ss.getCount();
+            sumMany += Double.parseDouble(ss.getPrice()) * Integer.parseInt(ss.getCount());
+            // 从购物车删除
+            car.deleteShoppingCart(ss.getCustomerId(), ss.getBarCode());
         }
+
+        // 构造orderFrom数据
+        orderFrom orderFrom = new orderFrom();
+        orderFrom.setIdOrderFrom("等待SQL生成");
+        orderFrom.setCustomerId(s[0].getCustomerId());
+        orderFrom.setDetail(detail);
+        orderFrom.setShoppingAdd(s[0].getAddress().substring(0, s[0].getAddress().length() - 5));
+        orderFrom.setDelivery(s[0].getAddress().substring(s[0].getAddress().length() - 4));
+
+        orderFrom.setTotal(sumMany);
+        orderFrom.setStatus("待付款");
+        orderFrom.setJoinTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+
+        ListObject listObject = new ListObject();
+        if (s.length > 0){
+            if (cu.addOrderFrom(orderFrom)) {
+                listObject.setCode(StatusCode.CODE_SUCCESS);
+                listObject.setMsg("已创建订单");
+            } else {
+                listObject.setCode(StatusCode.CODE_ERROR);
+                listObject.setMsg("创建订单失败");
+            }
+
+        } else {
+            listObject.setCode(StatusCode.CODE_ERROR);
+            listObject.setMsg("药品数据为空");
+        }
+        ResponseUtils.renderJson(response, JackJsonUtils.toJson(listObject));
     }
 
     @RequestMapping(value = "/deleteOrderFrom")
