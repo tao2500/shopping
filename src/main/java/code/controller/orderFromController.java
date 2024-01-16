@@ -111,8 +111,8 @@ public class orderFromController {
         String detail = "";
         double sumMany = 0;
         for (showShoppingCart ss : s) {
-            if (!detail.equals("")) detail += "，";
-            detail += ss.getName() +'、' + ss.getCount();
+            if (!detail.equals("")) detail += "； ";
+            detail += ss.getName() +" * " + ss.getCount();
             sumMany += Double.parseDouble(ss.getPrice()) * Integer.parseInt(ss.getCount());
             // 从购物车删除
             car.deleteShoppingCart(ss.getCustomerId(), ss.getBarCode());
