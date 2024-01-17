@@ -117,6 +117,8 @@ public class orderFromController {
             // 从购物车删除
             car.deleteShoppingCart(ss.getCustomerId(), ss.getBarCode());
         }
+        // 总价保留两位小数
+        sumMany = Math.round(sumMany * 100) / 100.0;
 
         // 构造orderFrom数据
         orderFrom orderFrom = new orderFrom();
