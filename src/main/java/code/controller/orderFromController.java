@@ -129,7 +129,7 @@ public class orderFromController {
         orderFrom.setDelivery(s[0].getAddress().substring(s[0].getAddress().length() - 4));
 
         orderFrom.setTotal(sumMany);
-        orderFrom.setStatus("待付款");
+        orderFrom.setStatus("待支付");
         orderFrom.setJoinTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
 
         ListObject listObject = new ListObject();
@@ -176,6 +176,9 @@ public class orderFromController {
 
     @RequestMapping(value = "/upDataOrderFrom")
     public void upDataOrderFrom(@RequestBody orderFrom c, HttpServletResponse response) {
+        System.out.println();
+        logger.info("idOrderFrom:" + c.getStatus());
+        System.out.println();
         ListObject listObject = new ListObject();
         if(c.getIdOrderFrom() == null || c.getIdOrderFrom().equals("")){
             listObject.setCode(StatusCode.CODE_ERROR);
@@ -205,7 +208,36 @@ public class orderFromController {
             ResponseUtils.renderJson(response, JackJsonUtils.toJson(listObject));
             return;
         }
+        // 订单状态从待支付 =》 待发货
         if(cu.playOk(request.getParameter("idOrderFrom"))){
+            listObject.setCode(StatusCode.CODE_SUCCESS);
+            listObject.setMsg("订单状态更新成功");
+        }else{
+            listObject.setCode(StatusCode.CODE_ERROR);
+            listObject.setMsg("订单状态更新失败");
+        }
+        ResponseUtils.renderJson(response, JackJsonUtils.toJson(listObject));
+    }
+
+    @RequestMapping(value = "/upDataOrderFromStatus")
+    public void upDataOrderFromStatus(HttpServletRequest request, HttpServletResponse response) {
+        System.out.println();
+        ListObject listObject = new ListObject();
+        logger.info("修改状态订单编号："+request.getParameter("idOrderFrom"));
+        System.out.println();
+        if(request.getParameter("idOrderFrom") == null || request.getParameter("idOrderFrom").equals("")){
+            listObject.setCode(StatusCode.CODE_ERROR);
+            listObject.setMsg("订单编号不能为空");
+            ResponseUtils.renderJson(response, JackJsonUtils.toJson(listObject));
+            return;
+        }
+        if(request.getParameter("status") == null || request.getParameter("status").equals("")){
+            listObject.setCode(StatusCode.CODE_ERROR);
+            listObject.setMsg("订单状态不能为空");
+            ResponseUtils.renderJson(response, JackJsonUtils.toJson(listObject));
+            return;
+        }
+        if(cu.upDataOrderFromStatus(request.getParameter("idOrderFrom"), request.getParameter("status"))){
             listObject.setCode(StatusCode.CODE_SUCCESS);
             listObject.setMsg("订单状态更新成功");
         }else{

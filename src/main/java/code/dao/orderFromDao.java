@@ -26,4 +26,5 @@ public interface orderFromDao {
     public boolean upDataOrderFrom(orderFrom d);
     public List<orderFrom> getOrderIdByTimeAndCId(String time, String cId);
     public boolean playOk(String idOrderFrom);
+    public boolean upDataOrderFromStatus(String idOrderFrom, String status);
 }

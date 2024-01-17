@@ -38,5 +38,8 @@
     <update id="playOk" parameterType="code.pojo.orderFrom">
         UPDATE `shopping`.`orderfrom` SET `status` = '待发货' WHERE (`idOrderFrom` = #{param1});
     </update>
+    <update id="upDataOrderFromStatus" parameterType="code.pojo.orderFrom">
+        UPDATE `shopping`.`orderfrom` SET `status` = #{param2} WHERE (`idOrderFrom` = #{param1});
+    </update>
 </mapper>
 
