@@ -14,6 +14,8 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
@@ -187,6 +189,26 @@ public class drugsController {
             listObject.setCode(StatusCode.CODE_ERROR);
             listObject.setMsg("修改失败");
         }
+        ResponseUtils.renderJson(response, JackJsonUtils.toJson(listObject));
+    }
+
+    @RequestMapping(value = "/editDrugsImg")
+    public void editDrugsImg(@RequestParam(value = "file", required = false) MultipartFile file,
+                             @RequestParam(value = "barCode", required = false) String barCode,
+                             HttpServletResponse response) {
+        System.out.println();
+        logger.info("收到参数" + file + " | | " + barCode);
+        System.out.println();
+        ListObject listObject = new ListObject();
+//        if(cu.deleteDrugs(c.getBarCode())){
+//            listObject.setCode(StatusCode.CODE_SUCCESS);
+//            listObject.setMsg("已下架");
+//        }else{
+//            listObject.setCode(StatusCode.CODE_ERROR);
+//            listObject.setMsg("下架失败！请联系管理员");
+//        }
+        listObject.setCode(StatusCode.CODE_SUCCESS);
+        listObject.setMsg("收到请求");
         ResponseUtils.renderJson(response, JackJsonUtils.toJson(listObject));
     }
 }
