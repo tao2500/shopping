@@ -1,6 +1,8 @@
 package code.controller;
 
+import code.dao.drugsDao;
 import code.dao.shoppingCartDao;
+import code.pojo.drugs;
 import code.pojo.shoppingCart;
 import code.pojo.showShoppingCart;
 import code.util.JackJsonUtils;
@@ -62,6 +64,25 @@ public class shoppingCartController {
         ListObject listObject = new ListObject();
         if (list.size() == 0) {
             listObject.setMsg("购物车为空");
+        } else {
+            listObject.setMsg("获取成功");
+        }
+        listObject.setCode(StatusCode.CODE_SUCCESS);
+        listObject.setItems(list);
+        ResponseUtils.renderJson(response, JackJsonUtils.toJson(listObject));
+    }
+
+    @Resource
+    private drugsDao dd;
+
+    @RequestMapping(value = "/selectedDrugByBarCode")
+    public void selectedByBarCode(HttpServletRequest request, HttpServletResponse response) {
+        System.out.println();
+        logger.info("selectedByCustomerId" + request.getParameter("barCode"));
+        List<drugs> list = dd.selectedByBarCode(request.getParameter("barCode"));
+        ListObject listObject = new ListObject();
+        if (list.size() == 0) {
+            listObject.setMsg("未找到相关药品");
         } else {
             listObject.setMsg("获取成功");
         }

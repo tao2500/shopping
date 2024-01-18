@@ -14,7 +14,7 @@
     <select id="selectedByBarCode" resultType="code.pojo.drugs">
         select *
         from shopping.drugs d
-        where d.barCode = #{barCode}
+        where d.barCode = #{param1}
     </select>
     <select id="selectedByName" parameterType="String" resultType="code.pojo.drugs">
         select *
