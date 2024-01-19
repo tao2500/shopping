@@ -21,8 +21,12 @@ import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.sql.rowset.serial.SerialBlob;
 import java.io.IOException;
+import java.sql.Blob;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -195,20 +199,41 @@ public class drugsController {
     @RequestMapping(value = "/editDrugsImg")
     public void editDrugsImg(@RequestParam(value = "file", required = false) MultipartFile file,
                              @RequestParam(value = "barCode", required = false) String barCode,
-                             HttpServletResponse response) {
+                             HttpServletResponse response)
+            throws IOException, SQLException {
         System.out.println();
-        logger.info("收到参数" + file + " | | " + barCode);
+        // MultipartFile转换为Blob对象
+        Blob blob = new SerialBlob(file.getBytes());
+        logger.info("收到参数" + blob + " | | " + barCode);
         System.out.println();
         ListObject listObject = new ListObject();
-//        if(cu.deleteDrugs(c.getBarCode())){
-//            listObject.setCode(StatusCode.CODE_SUCCESS);
-//            listObject.setMsg("已下架");
-//        }else{
-//            listObject.setCode(StatusCode.CODE_ERROR);
-//            listObject.setMsg("下架失败！请联系管理员");
-//        }
-        listObject.setCode(StatusCode.CODE_SUCCESS);
-        listObject.setMsg("收到请求");
+        if(cu.setDrugsImg(barCode, blob)){
+            listObject.setCode(StatusCode.CODE_SUCCESS);
+            listObject.setMsg("修改成功");
+        }else{
+            listObject.setCode(StatusCode.CODE_ERROR);
+            listObject.setMsg("修改失败");
+        }
+        ResponseUtils.renderJson(response, JackJsonUtils.toJson(listObject));
+    }
+
+    @RequestMapping(value = "/getDrugsImg")
+    public void getDrugsImg(HttpServletRequest httpServletRequest, HttpServletResponse response) {
+        System.out.println();
+        logger.info(httpServletRequest.getParameter("barCode") + "读取照片");
+        System.out.println();
+        ListObject listObject = new ListObject();
+        // 读取时反转为Byte对象，
+        // 因为Blob对象在数据库中是二进制数据，而Byte对象是字节数据
+        byte[] bytes = (byte[]) cu.getDrugsImg(httpServletRequest.getParameter("barCode"));
+        if (bytes != null) {
+            listObject.setCode(StatusCode.CODE_SUCCESS);
+            listObject.setMsg("读取成功");
+            listObject.setItems(Collections.singletonList(bytes));
+        } else {
+            listObject.setCode(StatusCode.CODE_ERROR);
+            listObject.setMsg("读取失败");
+        }
         ResponseUtils.renderJson(response, JackJsonUtils.toJson(listObject));
     }
 }

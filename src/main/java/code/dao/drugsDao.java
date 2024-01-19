@@ -4,6 +4,7 @@ import code.pojo.drugs;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Blob;
 import java.util.List;
 
 /**
@@ -26,4 +27,6 @@ public interface drugsDao {
     public List<drugs> selectedByEffect(String effect);
     public boolean deleteDrugs(String barCode);
     public boolean upDataDrugs(drugs d);
+    public boolean setDrugsImg(String barCode, Blob imgSrc);
+    public Object getDrugsImg (String barCode);
 }

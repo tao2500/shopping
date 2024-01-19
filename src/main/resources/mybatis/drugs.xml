@@ -11,6 +11,11 @@
         from shopping.drugs d
         where true
     </select>
+    <select id="getDrugsImg" resultType="code.pojo.drugs">
+        select imgSrc
+        from shopping.drugs d
+        where d.barCode = #{param1}
+    </select>
     <select id="selectedByBarCode" resultType="code.pojo.drugs">
         select *
         from shopping.drugs d
@@ -38,6 +43,9 @@
 
     <update id="upDataDrugs" parameterType="code.pojo.drugs">
         UPDATE `shopping`.`drugs` SET `imgSrc` = #{imgSrc},`name` = #{name}, `type` = #{type}, `effect` = #{effect}, `count` = #{count}, `size` = #{size}, `price` = #{price}, `expires` = #{expires} WHERE (`barCode` = #{barCode});
+    </update>
+    <update id="setDrugsImg" parameterType="code.pojo.drugs">
+        UPDATE `shopping`.`drugs` SET `imgSrc` = #{param2} WHERE (`barCode` = #{param1});
     </update>
 </mapper>
 
