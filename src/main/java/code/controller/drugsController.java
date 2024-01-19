@@ -22,7 +22,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.rowset.serial.SerialBlob;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -218,22 +221,30 @@ public class drugsController {
     }
 
     @RequestMapping(value = "/getDrugsImg")
-    public void getDrugsImg(HttpServletRequest httpServletRequest, HttpServletResponse response) {
+    public void getDrugsImg(String barCode, HttpServletResponse response) throws IOException {
         System.out.println();
-        logger.info(httpServletRequest.getParameter("barCode") + "读取照片");
+        logger.info(barCode + "读取照片");
+        // http://127.0.0.1:5173/api/drugs/getDrugsImg?barCode=6901339925085
         System.out.println();
-        ListObject listObject = new ListObject();
-        // 读取时反转为Byte对象，
-        // 因为Blob对象在数据库中是二进制数据，而Byte对象是字节数据
-        byte[] bytes = (byte[]) cu.getDrugsImg(httpServletRequest.getParameter("barCode"));
-        if (bytes != null) {
-            listObject.setCode(StatusCode.CODE_SUCCESS);
-            listObject.setMsg("读取成功");
-            listObject.setItems(Collections.singletonList(bytes));
-        } else {
-            listObject.setCode(StatusCode.CODE_ERROR);
-            listObject.setMsg("读取失败");
+        List<drugs> d = cu.selectedByBarCode(barCode);
+        if (d != null) {
+            // 读取时反转为Byte对象，
+            // 因为Blob对象在数据库中是二进制数据，而Byte对象是字节数据
+            // 开始转换
+            byte[] data = d.get(0).getImgSrc();
+            System.out.println();
+            logger.info(data);
+            System.out.println();
+            response.setContentType("image/jpeg");
+            response.setCharacterEncoding("UTF-8");
+            OutputStream outputSream = response.getOutputStream();
+            InputStream in = new ByteArrayInputStream(data);
+            int len = 0;
+            byte[] buf = new byte[1024];
+            while ((len = in.read(buf, 0, 1024)) != -1) {
+                outputSream.write(buf, 0, len);
+            }
+            outputSream.close();
         }
-        ResponseUtils.renderJson(response, JackJsonUtils.toJson(listObject));
     }
 }

@@ -11,7 +11,7 @@
         from shopping.drugs d
         where true
     </select>
-    <select id="getDrugsImg" resultType="code.pojo.drugs">
+    <select id="getDrugsImg" parameterType="java.lang.String" resultType="code.pojo.drugs">
         select imgSrc
         from shopping.drugs d
         where d.barCode = #{param1}

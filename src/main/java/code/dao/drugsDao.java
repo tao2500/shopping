@@ -28,5 +28,5 @@ public interface drugsDao {
     public boolean deleteDrugs(String barCode);
     public boolean upDataDrugs(drugs d);
     public boolean setDrugsImg(String barCode, Blob imgSrc);
-    public Object getDrugsImg (String barCode);
+    public byte[] getDrugsImg (String barCode);
 }

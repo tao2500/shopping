@@ -10,7 +10,7 @@ package code.pojo;
  */
 public class drugs {
     private String barCode;
-    private String imgSrc;
+    private byte[] imgSrc;
     private String name;
     private String type;
     private String effect;
@@ -27,11 +27,11 @@ public class drugs {
         this.barCode = barCode;
     }
 
-    public String getImgSrc() {
+    public byte[] getImgSrc() {
         return imgSrc;
     }
 
-    public void setImgSrc(String imgSrc) {
+    public void setImgSrc(byte[] imgSrc) {
         this.imgSrc = imgSrc;
     }
 
