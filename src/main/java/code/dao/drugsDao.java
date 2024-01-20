@@ -26,6 +26,7 @@ public interface drugsDao {
     public List<drugs> selectedByType(String type);
     public List<drugs> selectedByEffect(String effect);
     public boolean deleteDrugs(String barCode);
+    public boolean deleteDrugsImg(String barCode);
     public boolean upDataDrugs(drugs d);
     public boolean setDrugsImg(String barCode, Blob imgSrc);
     public byte[] getDrugsImg (String barCode);

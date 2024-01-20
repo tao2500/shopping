@@ -210,10 +210,14 @@ public class drugsController {
         logger.info("收到参数" + blob + " | | " + barCode);
         System.out.println();
         ListObject listObject = new ListObject();
-        if(cu.setDrugsImg(barCode, blob)){
-            listObject.setCode(StatusCode.CODE_SUCCESS);
-            listObject.setMsg("修改成功");
-        }else{
+        if (blob != null && !blob.equals("") && barCode != null && !barCode.equals("")) {
+            // 删除原有blob
+//            cu.deleteDrugsImg(barCode);
+            if(cu.setDrugsImg(barCode, blob)){
+                listObject.setCode(StatusCode.CODE_SUCCESS);
+                listObject.setMsg("修改成功");
+            }
+        } else {
             listObject.setCode(StatusCode.CODE_ERROR);
             listObject.setMsg("修改失败");
         }

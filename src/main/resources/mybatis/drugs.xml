@@ -40,6 +40,9 @@
     <delete id="deleteDrugs" parameterType="String">
         DELETE FROM `shopping`.`drugs` WHERE (`barCode` = #{barCode});
     </delete>
+    <update id="deleteDrugsImg" parameterType="code.pojo.drugs">
+        UPDATE `shopping`.`drugs` SET `imgSrc` = NULL WHERE (`barCode` = #{param1});
+    </update>
 
     <update id="upDataDrugs" parameterType="code.pojo.drugs">
         UPDATE `shopping`.`drugs` SET `imgSrc` = #{imgSrc},`name` = #{name}, `type` = #{type}, `effect` = #{effect}, `count` = #{count}, `size` = #{size}, `price` = #{price}, `expires` = #{expires} WHERE (`barCode` = #{barCode});
