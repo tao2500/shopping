@@ -8,6 +8,7 @@ import code.util.JackJsonUtils;
 import code.util.ListObject;
 import code.util.ResponseUtils;
 import code.util.StatusCode;
+import com.fasterxml.jackson.annotation.JsonAlias;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mybatis.spring.annotation.MapperScan;
@@ -59,21 +60,80 @@ public class freightController {
         ResponseUtils.renderJson(response, JackJsonUtils.toJson(listObject));
     }
 
+    // 查询是否支持同城闪送
+    @RequestMapping(value = "/canRunErrands")
+    public void canRunErrands(HttpServletRequest request, HttpServletResponse response) {
+        List<freight> list = new ArrayList<freight>();
+        ListObject listObject = new ListObject();
+        listObject.setCode(StatusCode.CODE_SUCCESS);
+        String addr = request.getParameter("cities");
+        int addrLength = addr.length();
+        String city = null;
+        if (addrLength > 4) {
+            int endIndex = addr.indexOf("市");
+            if (endIndex == -1){
+                endIndex = addr.indexOf("自治区");
+                if (endIndex == -1) {
+                    endIndex = 5;
+                }
+            }
+            city = addr.substring(addr.indexOf("省") + 1, endIndex);
+            // 如果是支持同城闪送城市
+            freight sCity = cu.selectedFreight(city);
+            if (sCity != null) {
+                list.add(cu.selectedFreight(city));
+                listObject.setItems(list);
+                listObject.setMsg("支持闪送");
+            }
+        }
+        ResponseUtils.renderJson(response, JackJsonUtils.toJson(listObject));
+    }
+
+    // 查询该城市快递配送价格
     @RequestMapping(value = "/selectedFreight")
     public void selectedFreightByCity(HttpServletRequest request, HttpServletResponse response) {
         System.out.println();
-        System.out.println();
         logger.info("控制台selectedByName" + request.toString() + "request=" + request.getParameter("cities"));
         List<freight> list = new ArrayList<freight>();
-        list.add(cu.selectedFreight(request.getParameter("cities")));
         ListObject listObject = new ListObject();
-        if (list.size() == 0) {
-            listObject.setCode(StatusCode.CODE_NULL);
-            listObject.setMsg("未查询到运费");
-        } else {
+        listObject.setCode(StatusCode.CODE_SUCCESS);
+        listObject.setMsg("0");
+
+        String addr = request.getParameter("cities");
+        int addrLength = addr.length();
+        // 获取地址中的省、市
+        String province = null;
+        if (addrLength > 2) {
+            int index = addr.indexOf("省");
+            if (index == -1) {
+                // 直辖市
+                index = addr.indexOf("市");
+                if (index == -1) {
+                    if (index == -1) {
+                        index = addr.indexOf("特别行政区");
+                        if (index == -1) {
+                            index = 3;
+                        }
+                    }
+                }
+            }
+            province = addr.substring(0, index);
+
+            System.out.println();
+            logger.info("控制台得到请求地址selectedFreight" + province);
+            System.out.println();
+
+            freight sProvince;
+            // 查询该省运费
+            sProvince = cu.selectedFreight(province);
+            if (sProvince == null) {
+                // 默认外省配送费用
+                sProvince = cu.selectedFreight("其他省外地区");
+            }
+            list.add(sProvince);
             listObject.setItems(list);
             listObject.setCode(StatusCode.CODE_SUCCESS);
-            listObject.setMsg("获取运费成功");
+            listObject.setMsg(sProvince.getPrice());
         }
         ResponseUtils.renderJson(response, JackJsonUtils.toJson(listObject));
     }
