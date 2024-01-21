@@ -24,6 +24,13 @@
         and s.customerId = #{param1}
     </select>
 
+    <select id="selectedMyCartDrugsCount" parameterType="String" resultType="code.pojo.shoppingCart">
+        select *
+        from shopping.shoppingcart s
+        where s.customerId = #{param1}
+        and s.barCode = #{param2}
+    </select>
+
     <delete id="deleteShoppingCart" parameterType="String">
         DELETE FROM `shopping`.`shoppingcart`
         WHERE (`customerId` = #{param1}

@@ -36,7 +36,7 @@ import java.util.Random;
 /**
  * ClassName:drugsController
  * Package:code.controller
- * Description:
+ * Description:药品控制器
  *
  * @Date:2024/1/5 15:14
  * @Author:2500594037@qq.com

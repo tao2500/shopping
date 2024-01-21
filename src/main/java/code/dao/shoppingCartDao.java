@@ -23,6 +23,7 @@ public interface shoppingCartDao {
     public List<shoppingCart> selectedAll();
     public List<shoppingCart> selectedByCustomerId(String customerId);
     public List<showShoppingCart> getMyShoppingCart(String customerId);
+    public List<shoppingCart> selectedMyCartDrugsCount(String customerId, String barCode);
     public boolean deleteShoppingCart(String customerId, String barCode);
     public boolean upDataShoppingCart(shoppingCart s);
     public boolean changeCount(String customerId, String barCode, String count);

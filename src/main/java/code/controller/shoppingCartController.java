@@ -74,7 +74,7 @@ public class shoppingCartController {
 
     @Resource
     private drugsDao dd;
-
+    // 通过查找药品获得库存
     @RequestMapping(value = "/selectedDrugByBarCode")
     public void selectedByBarCode(HttpServletRequest request, HttpServletResponse response) {
         System.out.println();
@@ -100,6 +100,24 @@ public class shoppingCartController {
         ListObject listObject = new ListObject();
         if (list.size() == 0) {
             listObject.setMsg("购物车为空");
+        } else {
+            listObject.setMsg("获取成功");
+        }
+        listObject.setCode(StatusCode.CODE_SUCCESS);
+        listObject.setItems(list);
+        ResponseUtils.renderJson(response, JackJsonUtils.toJson(listObject));
+    }
+
+    // 获取当前顾客某款药品已加购物车个数
+    @RequestMapping(value = "/getMyCartDrugsCount")
+    public void selectedMyCartDrugsCount(HttpServletRequest request, HttpServletResponse response) {
+        System.out.println();
+        logger.info("selectedByCustomerId" + request.getParameter("customerId") + "||" + request.getParameter("barCode"));
+        System.out.println();
+        List<shoppingCart> list = cu.selectedMyCartDrugsCount(request.getParameter("customerId"), request.getParameter("barCode"));
+        ListObject listObject = new ListObject();
+        if (list.size() == 0) {
+            listObject.setMsg("未找到相关药品");
         } else {
             listObject.setMsg("获取成功");
         }
