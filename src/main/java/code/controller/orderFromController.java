@@ -199,6 +199,13 @@ public class orderFromController {
         if(cu.upDataOrderFrom(c)){
             listObject.setCode(StatusCode.CODE_SUCCESS);
             listObject.setMsg("订单状态更新成功");
+
+            // 如果是取消订单，则要 加回药品余量
+            if (c.getStatus().equals("已取消")) {
+                String drugList = c.getDetail();
+                addDCount(drugList);
+            }
+
         }else{
             listObject.setCode(StatusCode.CODE_ERROR);
             listObject.setMsg("订单状态更新失败");
@@ -229,6 +236,7 @@ public class orderFromController {
         ResponseUtils.renderJson(response, JackJsonUtils.toJson(listObject));
     }
 
+    // 修改订单状态，取消时药品余量加回
     @RequestMapping(value = "/upDataOrderFromStatus")
     public void upDataOrderFromStatus(HttpServletRequest request, HttpServletResponse response) {
         System.out.println();
@@ -250,10 +258,36 @@ public class orderFromController {
         if(cu.upDataOrderFromStatus(request.getParameter("idOrderFrom"), request.getParameter("status"))){
             listObject.setCode(StatusCode.CODE_SUCCESS);
             listObject.setMsg("订单状态更新成功");
+
+            // 加回药品余量
+            if (request.getParameter("status").equals("已取消")) {
+                String drugList = request.getParameter("drugList");
+                addDCount(drugList);
+            }
+
         }else{
             listObject.setCode(StatusCode.CODE_ERROR);
             listObject.setMsg("订单状态更新失败");
         }
         ResponseUtils.renderJson(response, JackJsonUtils.toJson(listObject));
+    }
+
+    // 取消订单，加回药品余量
+    private void addDCount(String drugList) {
+        String[] drugArr = drugList.split("；");
+        for (int i = 0; i < drugArr.length; i++){
+            String[] drugNum = drugArr[i].split("\\*");
+            List<drugs> list = dd.selectedByName(drugNum[0].trim());
+            if (list.size() == 0) {
+                System.out.println();
+                logger.info("修改药品库存失败，药品" + drugNum[0] +"不存在");
+                System.out.println();
+                continue;
+            }
+            drugs drug = list.get(0);
+            drug.setCount(drug.getCount() + Integer.parseInt(drugNum[1].trim()));
+            dd.upDataDrugs(drug);
+        }
+        logger.info("取消订单，药品" + drugArr +"余量加回");
     }
 }
