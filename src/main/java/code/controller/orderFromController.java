@@ -1,9 +1,11 @@
 package code.controller;
 
 import cn.hutool.json.JSON;
+import code.dao.drugsDao;
 import code.dao.orderFromDao;
 import code.dao.shoppingCartDao;
 import code.pojo.customer;
+import code.pojo.drugs;
 import code.pojo.orderFrom;
 import code.pojo.showShoppingCart;
 import code.util.JackJsonUtils;
@@ -100,6 +102,9 @@ public class orderFromController {
     @Resource
     private shoppingCartDao car;
 
+    @Resource
+    private drugsDao dd;
+
     @RequestMapping(value = "/addOrderFrom")
     public void addOrderFromTwo(@RequestBody showShoppingCart[] s, HttpServletResponse response) throws IOException {
         System.out.println();
@@ -114,6 +119,11 @@ public class orderFromController {
             if (!detail.equals("")) detail += "； ";
             detail += ss.getName() +" * " + ss.getCount();
             sumMany += Double.parseDouble(ss.getPrice()) * Integer.parseInt(ss.getCount());
+            // 药品数量对应减少（先获取该药品在修改该药品余量）
+            List<drugs> drug = dd.selectedByBarCode(ss.getBarCode());
+            drugs drugOne = drug.get(0);
+            drugOne.setCount(drugOne.getCount() - Integer.parseInt(ss.getCount()));
+            dd.upDataDrugs(drugOne);
             // 从购物车删除
             car.deleteShoppingCart(ss.getCustomerId(), ss.getBarCode());
         }
